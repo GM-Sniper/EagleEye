@@ -114,22 +114,21 @@ else:
 # Global State (initialized on startup)
 # ============================================================================
 
+from models.hybrid_forecaster import HybridForecaster
+
+# ...
+
 class AppState:
     pipeline: Optional[DataPipeline] = None
-    forecaster: Optional[ProductionForecaster] = None
+    forecaster: Optional[ProductionForecaster] = None   # Global aggregate model
+    hybrid_forecaster: Optional[HybridForecaster] = None # Item-level model
     inventory_service: Optional[InventoryService] = None
     daily_demand: Optional[pd.DataFrame] = None
     item_stats: Optional[pd.DataFrame] = None
     orders: Optional[pd.DataFrame] = None
-    DAILY_DEMAND_STATS = None
-    
-    # Cache for backtests to avoid re-training on every click
-    BACKTEST_CACHE = {}
-    is_initialized: bool = False
+    # ...
 
-
-state = AppState()
-
+# ...
 
 @app.on_event("startup")
 async def startup():
@@ -146,13 +145,19 @@ async def startup():
         state.daily_demand = state.pipeline.get_daily_demand()
         state.item_stats = state.pipeline.get_item_stats()
         state.orders = state.pipeline.orders
+        state.order_items = state.pipeline.order_items # Needed for global model
         
-        # Initialize forecaster
+        # Initialize Aggregate Forecaster (for Dashboard)
         state.forecaster = ProductionForecaster()
         state.forecaster.fit(state.daily_demand)
         
-        # Initialize inventory service
-        state.inventory_service = InventoryService()
+        # Initialize Hybrid Forecaster (for Item Details)
+        print("🧠 Training Hybrid Forensic Models...")
+        state.hybrid_forecaster = HybridForecaster()
+        state.hybrid_forecaster.fit(state.orders, state.order_items)
+        
+        # Initialize inventory service with hybrid model
+        state.inventory_service = InventoryService(forecaster=state.hybrid_forecaster)
         
         state.is_initialized = True
         print("✅ EagleEye API ready!")
