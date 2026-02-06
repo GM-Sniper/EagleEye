@@ -24,9 +24,9 @@ export default function CommandCenter() {
             </div>
 
             {/* High-Level KPIs */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-pop-in delay-100 backwards">
                 {/* Network Health */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm hover:scale-[1.02] transition-transform duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-medium text-slate-400">Network Health</h3>
                         <svg className="text-emerald-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
@@ -39,7 +39,7 @@ export default function CommandCenter() {
                 </div>
 
                 {/* Global Inventory Value */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm hover:scale-[1.02] transition-transform duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-medium text-slate-400">Inventory Value</h3>
                         <svg className="text-blue-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></svg>
@@ -52,7 +52,7 @@ export default function CommandCenter() {
                 </div>
 
                 {/* Pending Actions */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 p-6 backdrop-blur-sm hover:scale-[1.02] transition-transform duration-300">
                     <div className="flex items-center justify-between mb-4">
                         <h3 className="text-sm font-medium text-slate-400">Action Required</h3>
                         <svg className="text-orange-500" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
@@ -63,10 +63,10 @@ export default function CommandCenter() {
             </div>
 
             {/* Predictive Intelligence */}
-            <div>
+            <div className="animate-pop-in delay-200 backwards">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Demand Surge */}
-                    <div className="relative overflow-hidden rounded-2xl border border-sky-500/30 bg-sky-900/10 p-6 backdrop-blur-sm group hover:border-sky-500/50 transition-colors">
+                    <div className="relative overflow-hidden rounded-2xl border border-sky-500/30 bg-sky-900/10 p-6 backdrop-blur-sm group hover:border-sky-500/50 hover:scale-[1.01] transition-all duration-300">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <svg className="text-sky-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
                         </div>
@@ -84,7 +84,7 @@ export default function CommandCenter() {
                     </div>
 
                     {/* Large Order Forecast */}
-                    <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-blue-900/10 p-6 backdrop-blur-sm group hover:border-blue-500/50 transition-colors">
+                    <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-blue-900/10 p-6 backdrop-blur-sm group hover:border-blue-500/50 hover:scale-[1.01] transition-all duration-300">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                             <svg className="text-blue-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
                         </div>
@@ -104,8 +104,8 @@ export default function CommandCenter() {
             </div>
 
             {/* Recent Activity / System Log */}
-            <div className="grid grid-cols-1 gap-6">
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 flex flex-col backdrop-blur-sm">
+            <div className="grid grid-cols-1 gap-6 animate-pop-in delay-300 backwards">
+                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 flex flex-col backdrop-blur-sm hover:border-slate-700 transition-colors">
                     <div className="border-b border-slate-800 px-6 py-4">
                         <h3 className="text-sm font-semibold text-white">Recent System Activity</h3>
                     </div>
