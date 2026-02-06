@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import CommandCenter from "../components/CommandCenter";
 import StockTerminal from "../components/StockTerminal";
 import DemandProjection from "../components/DemandProjection";
-import RevenueSegments from "../components/RevenueSegments";
 
 // --- Icons ---
 function ActivityIcon({ className }: { className?: string }) {
@@ -188,8 +187,6 @@ export default function DashboardPage() {
         return <StockTerminal />;
       case "Demand Projection":
         return <DemandProjection />;
-      case "Revenue Segments":
-        return <RevenueSegments />;
       default:
         return <CommandCenter />;
     }
@@ -202,22 +199,13 @@ export default function DashboardPage() {
 
       {/* Top Navigation Bar */}
       <nav className="h-16 border-b border-white/5 bg-slate-900/80 backdrop-blur-xl flex items-center justify-between px-6 z-50">
-        {/* Logo Section */}
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-            </svg>
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+            <img
+              src="/Eagle_Eye.png"
+              alt="Eagle Eye Logo"
+              className="h-full w-full object-cover"
+            />
           </div>
           <span className="text-lg font-bold text-white tracking-tight">Eagle<span className="text-emerald-500">Eye</span></span>
         </div>
@@ -242,12 +230,6 @@ export default function DashboardPage() {
           >
             Demand
           </button>
-          <button
-            onClick={() => setActiveTab("Revenue Segments")}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "Revenue Segments" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
-          >
-            Revenue
-          </button>
         </div>
 
         {/* Right Actions */}
@@ -270,7 +252,9 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto space-y-6">
 
 
-          {renderContent()}
+          <div key={activeTab} className="animate-slide-up-fade">
+            {renderContent()}
+          </div>
         </div>
       </main>
     </div>

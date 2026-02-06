@@ -30,12 +30,12 @@ export default function DemandProjection() {
             {/* AI Forecast Hero Section */}
             <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 backdrop-blur-sm relative overflow-hidden group">
                 {/* Background Glow */}
-                <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-500/10 blur-3xl pointer-events-none" />
+                <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
 
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <div className="h-2 w-2 rounded-full bg-violet-500 animate-pulse" />
+                            <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
                             7-Day Forecast
                         </h3>
                         <p className="text-xs text-slate-500">Actual vs. AI Predicted Velocity</p>
@@ -46,8 +46,8 @@ export default function DemandProjection() {
                             <span className="text-slate-300">Actual Sales</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="w-3 h-1 bg-violet-500 rounded-full border border-violet-500 border-dashed"></span>
-                            <span className="text-violet-300">AI Prediction</span>
+                            <span className="w-3 h-1 bg-blue-500 rounded-full border border-blue-500 border-dashed"></span>
+                            <span className="text-blue-300">AI Prediction</span>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@ export default function DemandProjection() {
                                     {/* Predicted Bar (Ghost) */}
                                     <div
                                         style={{ height: `${data.predicted}%` }}
-                                        className={`w-3 rounded-t-sm transition-all relative ${data.actual === null ? 'bg-violet-500/80' : 'bg-transparent border-t-2 border-r-2 border-l-2 border-violet-500/30'}`}
+                                        className={`w-3 rounded-t-sm transition-all relative ${data.actual === null ? 'bg-blue-500/80' : 'bg-transparent border-t-2 border-r-2 border-l-2 border-blue-500/30'}`}
                                     >
                                         {/* Tooltip on Hover */}
                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none border border-slate-700">

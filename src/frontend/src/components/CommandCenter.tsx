@@ -66,36 +66,36 @@ export default function CommandCenter() {
             <div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Demand Surge */}
-                    <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-indigo-900/10 p-6 backdrop-blur-sm group hover:border-indigo-500/50 transition-colors">
+                    <div className="relative overflow-hidden rounded-2xl border border-sky-500/30 bg-sky-900/10 p-6 backdrop-blur-sm group hover:border-sky-500/50 transition-colors">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <svg className="text-indigo-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+                            <svg className="text-sky-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
                         </div>
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="px-2 py-1 rounded-md bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wider">Demand Surge</span>
-                                <span className="text-xs text-indigo-200/60">Confidence: 94%</span>
+                                <span className="px-2 py-1 rounded-md bg-sky-500/20 text-sky-300 text-xs font-bold uppercase tracking-wider">Demand Surge</span>
+                                <span className="text-xs text-sky-200/60">Confidence: 94%</span>
                             </div>
                             <h4 className="text-xl font-bold text-white mb-1">Product X-200</h4>
-                            <p className="text-indigo-200 text-sm mb-4">Demand expected to rise by <span className="font-bold text-white">40%</span> next week due to seasonal trends.</p>
-                            <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
+                            <p className="text-sky-200 text-sm mb-4">Demand expected to rise by <span className="font-bold text-white">40%</span> next week due to seasonal trends.</p>
+                            <button className="text-xs font-medium text-sky-400 hover:text-sky-300 flex items-center gap-1 transition-colors">
                                 View Forecast Details <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                             </button>
                         </div>
                     </div>
 
                     {/* Large Order Forecast */}
-                    <div className="relative overflow-hidden rounded-2xl border border-violet-500/30 bg-violet-900/10 p-6 backdrop-blur-sm group hover:border-violet-500/50 transition-colors">
+                    <div className="relative overflow-hidden rounded-2xl border border-blue-500/30 bg-blue-900/10 p-6 backdrop-blur-sm group hover:border-blue-500/50 transition-colors">
                         <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <svg className="text-violet-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                            <svg className="text-blue-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
                         </div>
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
-                                <span className="px-2 py-1 rounded-md bg-violet-500/20 text-violet-300 text-xs font-bold uppercase tracking-wider">Incoming Bulk</span>
-                                <span className="text-xs text-violet-200/60">Est: Friday</span>
+                                <span className="px-2 py-1 rounded-md bg-blue-500/20 text-blue-300 text-xs font-bold uppercase tracking-wider">Incoming Bulk</span>
+                                <span className="text-xs text-blue-200/60">Est: Friday</span>
                             </div>
                             <h4 className="text-xl font-bold text-white mb-1">Branch Y (Downtown)</h4>
-                            <p className="text-violet-200 text-sm mb-4">Predicted large stock request of <span className="font-bold text-white">500 units</span> for Item Z.</p>
-                            <button className="text-xs font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors">
+                            <p className="text-blue-200 text-sm mb-4">Predicted large stock request of <span className="font-bold text-white">500 units</span> for Item Z.</p>
+                            <button className="text-xs font-medium text-blue-400 hover:text-blue-300 flex items-center gap-1 transition-colors">
                                 Prepare Allocation <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                             </button>
                         </div>
