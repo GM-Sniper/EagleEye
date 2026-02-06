@@ -290,6 +290,53 @@ def _plot_top_items_daily_series(
     plt.close(fig)
 
 
+def _plot_top_places_daily_series(
+    pred_out: pd.DataFrame,
+    out_path: Path,
+    *,
+    top_n: int,
+) -> None:
+    """Plot daily actual vs predicted aggregated per place across items."""
+    place_day = (
+        pred_out.groupby(["date", "place_id"], as_index=False)[["y_true", "y_pred"]]
+        .sum()
+        .sort_values(["place_id", "date"])
+    )
+    top_places = (
+        place_day.groupby("place_id", as_index=False)["y_true"]
+        .sum()
+        .sort_values("y_true", ascending=False)
+        .head(int(top_n))["place_id"]
+        .tolist()
+    )
+    if not top_places:
+        return
+
+    n = len(top_places)
+    ncols = 2
+    nrows = int(np.ceil(n / ncols))
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(12, 3.4 * nrows), sharex=False)
+    axes = np.array(axes).reshape(-1)
+
+    for i, place_id in enumerate(top_places):
+        ax = axes[i]
+        s = place_day[place_day["place_id"] == place_id].sort_values("date")
+        ax.plot(s["date"], s["y_true"], label="Actual", linewidth=2)
+        ax.plot(s["date"], s["y_pred"], label="Predicted", linewidth=2)
+        ax.set_title(f"place_id={place_id}")
+        ax.set_ylabel("demand_qty")
+        ax.tick_params(axis="x", rotation=25)
+
+    for j in range(i + 1, len(axes)):
+        axes[j].axis("off")
+
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=2)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    fig.savefig(out_path, dpi=160)
+    plt.close(fig)
+
+
 def _per_item_metrics(pred_out: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for item_id, g in pred_out.groupby("item_id", sort=False):
@@ -298,6 +345,33 @@ def _per_item_metrics(pred_out: pd.DataFrame) -> pd.DataFrame:
         rows.append(
             {
                 "item_id": int(item_id),
+                "rows": int(len(g)),
+                "nonzero_true_rows": int(np.sum(y_true > 0)),
+                "sum_true": float(np.sum(y_true)),
+                "sum_pred": float(np.sum(y_pred)),
+                "mae": _mae(y_true, y_pred),
+                "rmse": _rmse(y_true, y_pred),
+                "wmape": _wmape(y_true, y_pred),
+                "smape": _smape(y_true, y_pred),
+            }
+        )
+    out = pd.DataFrame(rows)
+    if out.empty:
+        return out
+    out["wmape_pct"] = out["wmape"] * 100.0
+    out["smape_pct"] = out["smape"] * 100.0
+    out = out.sort_values(["sum_true", "wmape"], ascending=[False, True]).reset_index(drop=True)
+    return out
+
+
+def _per_place_metrics(pred_out: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    for place_id, g in pred_out.groupby("place_id", sort=False):
+        y_true = g["y_true"].to_numpy(dtype=float)
+        y_pred = g["y_pred"].to_numpy(dtype=float)
+        rows.append(
+            {
+                "place_id": float(place_id),
                 "rows": int(len(g)),
                 "nonzero_true_rows": int(np.sum(y_true > 0)),
                 "sum_true": float(np.sum(y_true)),
@@ -326,6 +400,22 @@ def _plot_item_wmape_bars(item_metrics: pd.DataFrame, out_path: Path, *, top_n: 
     plt.bar(top["item_id"].astype(str), top["wmape_pct"].astype(float))
     plt.title(f"Per-item WMAPE% (top {len(top)} items by volume)")
     plt.xlabel("item_id")
+    plt.ylabel("WMAPE%")
+    plt.xticks(rotation=45, ha="right")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=160)
+    plt.close()
+
+
+def _plot_place_wmape_bars(place_metrics: pd.DataFrame, out_path: Path, *, top_n: int) -> None:
+    if place_metrics.empty:
+        return
+    top = place_metrics.sort_values("sum_true", ascending=False).head(int(top_n)).copy()
+    top = top.sort_values("wmape_pct", ascending=False)
+    plt.figure(figsize=(12, 5))
+    plt.bar(top["place_id"].astype(str), top["wmape_pct"].astype(float))
+    plt.title(f"Per-place WMAPE% (top {len(top)} places by volume)")
+    plt.xlabel("place_id")
     plt.ylabel("WMAPE%")
     plt.xticks(rotation=45, ha="right")
     plt.tight_layout()
@@ -531,6 +621,20 @@ def main() -> int:
     _plot_item_wmape_bars(
         item_metrics,
         plots_dir / "item_wmape_top_items.png",
+        top_n=20,
+    )
+
+    # Per-place inspection outputs (aggregated across items)
+    place_metrics = _per_place_metrics(pred_out)
+    place_metrics.to_csv(out_dir / "place_level_metrics.csv", index=False)
+    _plot_top_places_daily_series(
+        pred_out,
+        plots_dir / "top_places_daily_actual_vs_pred.png",
+        top_n=12,
+    )
+    _plot_place_wmape_bars(
+        place_metrics,
+        plots_dir / "place_wmape_top_places.png",
         top_n=20,
     )
 
