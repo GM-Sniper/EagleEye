@@ -1,7 +1,8 @@
-"""
-EagleEye Data Pipeline
+"""EagleEye Data Pipeline
 Handles data loading, cleaning, and transformation for inventory analytics.
 """
+
+from __future__ import annotations
 
 import pandas as pd
 import numpy as np
@@ -127,6 +128,42 @@ class DataPipeline:
         stats = stats.merge(items, on='item_id', how='left')
         
         return stats
+
+    def build_item_place_item_demand_features(
+        self,
+        *,
+        min_date: Optional[str] = None,
+        max_date: Optional[str] = None,
+        place_ids: Optional[list[int]] = None,
+        item_ids: Optional[list[int]] = None,
+        config: Optional["DemandFeatureConfig"] = None,
+    ) -> pd.DataFrame:
+        """Build a supervised learning dataset at (date, place_id, item_id).
+
+        Includes engineered features: price/margin/discount, store traffic,
+        channel mix, calendar/holidays, lag/rolling demand, lifecycle, static
+        item/place metadata, and rank/ABC signals.
+        """
+        if self._orders is None or self._order_items is None or self._items is None or self._places is None:
+            self.load_core_tables()
+
+        # Local import to avoid import-path issues when running this file directly.
+        try:
+            from services.demand_feature_builder import DemandFeatureBuilder, DemandFeatureConfig
+        except Exception:
+            from .demand_feature_builder import DemandFeatureBuilder, DemandFeatureConfig
+
+        builder = DemandFeatureBuilder(config or DemandFeatureConfig())
+        return builder.build(
+            self._orders,
+            self._order_items,
+            self._items,
+            self._places,
+            min_date=min_date,
+            max_date=max_date,
+            place_ids=place_ids,
+            item_ids=item_ids,
+        )
     
     @property
     def orders(self) -> pd.DataFrame:
