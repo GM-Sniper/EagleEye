@@ -78,18 +78,34 @@ def _select_feature_columns(df: pd.DataFrame) -> list[str]:
         "place_total_item_revenue",
         "place_unique_items_sold",
     }
+
+    # Heuristic guardrail: drop same-day transactional aggregates unless lagged/rolling.
+    # (These commonly allow inferring demand_qty for the same date.)
+    leaky_substrings = (
+        "revenue", "cost", "margin", "discount", "commission",
+        "unit_price", "unit_cost",
+        "n_orders", "n_order_lines", "order_lines", "order_count",
+        "basket", "total_amount",
+    )
+
+    def _is_probably_leaky(col: str) -> bool:
+        c = col.lower()
+        if ("lag_" in c) or ("roll_" in c):
+            return False
+        return any(s in c for s in leaky_substrings)
+
     feature_cols: list[str] = []
     for c in df.columns:
         if c in drop_cols:
             continue
         if c.startswith("Unnamed:"):
             continue
-        # Keep only numeric/bool columns (drop object/string/category/etc.)
+        if _is_probably_leaky(c):
+            continue
         if not (is_numeric_dtype(df[c]) or is_bool_dtype(df[c])):
             continue
         feature_cols.append(c)
 
-    # Safety: remove any duplicates while preserving order
     seen: set[str] = set()
     out: list[str] = []
     for c in feature_cols:
@@ -407,7 +423,17 @@ def main() -> int:
 
     train_df = _downsample(train_df, frac=float(args.sample_frac), seed=int(args.seed))
 
+    print("\n=== Feature table columns (df.columns) ===")
+    print(f"n_cols={df.shape[1]}")
+    print(df.columns.tolist())
+    print("=== End columns ===\n")
+
     feature_cols = _select_feature_columns(df)
+
+    print("=== Selected feature columns (feature_cols) ===")
+    print(f"n_features={len(feature_cols)}")
+    print(feature_cols)
+    print("=== End selected features ===\n")
 
     X_train = train_df[feature_cols].replace([np.inf, -np.inf], np.nan).fillna(0)
     y_train = train_df["demand_qty"].astype(float).to_numpy()
