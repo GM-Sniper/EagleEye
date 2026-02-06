@@ -172,7 +172,7 @@ function SidebarItem({
     >
       <Icon className={`h-5 w-5 ${isActive ? "text-white" : "text-slate-500 group-hover:text-emerald-400"}`} />
       <span>{label}</span>
-      {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-white animate-pulse" />}
+      {isActive && <span className="ml-auto block h-1.5 w-1.5 rounded-full bg-white animate-pulse" />}
     </button>
   );
 }
@@ -196,120 +196,83 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-72 flex-shrink-0 border-r border-border/40 bg-card/50 backdrop-blur-xl p-6 flex flex-col gap-8">
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-900/50">
+    <div className="flex h-screen w-full bg-slate-950 text-foreground overflow-hidden flex-col">
+      {/* Background */}
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pointer-events-none -z-10" />
+
+      {/* Top Navigation Bar */}
+      <nav className="h-16 border-b border-white/5 bg-slate-900/80 backdrop-blur-xl flex items-center justify-between px-6 z-50">
+        {/* Logo Section */}
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
             <svg
-              className="text-white"
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
+              width="20"
+              height="20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="3"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
             </svg>
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">
-              EAGLE<span className="text-emerald-400">EYE</span>
-            </h1>
-            <p className="text-[10px] font-medium text-emerald-500/80 tracking-widest uppercase">
-              Intelligence v1.2
-            </p>
-          </div>
+          <span className="text-lg font-bold text-white tracking-tight">Eagle<span className="text-emerald-500">Eye</span></span>
         </div>
 
-        {/* Nav Items */}
-        <nav className="flex-1 space-y-2">
-          <SidebarItem
-            icon={ActivityIcon}
-            label="Command Center"
-            isActive={activeTab === "Command Center"}
+        {/* Central Tabs */}
+        <div className="hidden md:flex items-center gap-1 bg-slate-800/50 p-1 rounded-lg border border-white/5">
+          <button
             onClick={() => setActiveTab("Command Center")}
-          />
-          <SidebarItem
-            icon={BoxIcon}
-            label="Stock Terminal"
-            isActive={activeTab === "Stock Terminal"}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "Command Center" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+          >
+            Overview
+          </button>
+          <button
             onClick={() => setActiveTab("Stock Terminal")}
-          />
-          <SidebarItem
-            icon={BarChartIcon}
-            label="Demand Projection"
-            isActive={activeTab === "Demand Projection"}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "Stock Terminal" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+          >
+            Stock
+          </button>
+          <button
             onClick={() => setActiveTab("Demand Projection")}
-          />
-          <SidebarItem
-            icon={PieChartIcon}
-            label="Revenue Segments"
-            isActive={activeTab === "Revenue Segments"}
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "Demand Projection" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+          >
+            Demand
+          </button>
+          <button
             onClick={() => setActiveTab("Revenue Segments")}
-          />
-        </nav>
+            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all ${activeTab === "Revenue Segments" ? "bg-emerald-500 text-white shadow-sm" : "text-slate-400 hover:text-white hover:bg-white/5"}`}
+          >
+            Revenue
+          </button>
+        </div>
 
-        {/* Bottom Actions */}
-        <div className="mt-auto">
-          <div className="rounded-2xl bg-slate-900/50 border border-slate-800 p-4">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
-              <span className="text-xs font-medium text-emerald-400">System Online</span>
-            </div>
-            <button className="w-full rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 py-2.5 transition-colors border border-slate-700/50">
-              Refresh Core
-            </button>
+        {/* Right Actions */}
+        <div className="flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/20">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-xs font-medium text-emerald-400">System Online</span>
+          </div>
+          <button className="h-9 w-9 rounded-full bg-slate-800/50 border border-white/5 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
+            <BellIcon className="h-4 w-4" />
+          </button>
+          <div className="h-8 w-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-500">
+            AD
           </div>
         </div>
-      </aside>
+      </nav>
 
-      {/* Main Content Wrapper */}
-      <div className="flex-1 flex flex-col min-w-0 bg-background relative">
-        {/* Background Gradients */}
-        <div className="absolute top-0 left-0 w-full h-96 bg-gradient-to-b from-slate-900 to-transparent opacity-50 pointer-events-none" />
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto p-6 lg:p-10 relative">
+        <div className="max-w-7xl mx-auto space-y-6">
 
-        {/* Top Header */}
-        <header className="sticky top-0 z-10 flex h-20 items-center justify-between px-8 py-4 backdrop-blur-md bg-background/0">
-          <div>
-            <h2 className="text-2xl font-bold text-white tracking-tight italic uppercase">
-              {activeTab} <span className="text-slate-500 not-italic font-light">/</span> VIEW
-            </h2>
-            <p className="text-sm text-slate-400">
-              Deep Learning powered inventory optimization system
-            </p>
-          </div>
 
-          <div className="flex items-center gap-4">
-            <div className="relative group">
-              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
-              <input
-                type="text"
-                placeholder="Query Item ID or Name..."
-                className="h-10 w-80 rounded-full bg-slate-900/50 border border-slate-800 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500/50 transition-all"
-              />
-            </div>
-
-            <button className="h-10 w-10 rounded-full bg-slate-900/50 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
-              <BellIcon className="h-4 w-4" />
-            </button>
-            <button className="h-10 w-10 rounded-full bg-slate-900/50 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
-              <HelpCircleIcon className="h-4 w-4" />
-            </button>
-          </div>
-        </header>
-
-        {/* Dashboard Content Scroll Area */}
-        <main className="flex-1 overflow-auto p-8 pt-4">
           {renderContent()}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }

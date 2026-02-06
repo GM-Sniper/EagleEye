@@ -6,8 +6,8 @@ export default function CommandCenter() {
             {/* Welcome / Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-white tracking-tight">System Overview</h2>
-                    <p className="text-slate-400 text-sm">Real-time operational intelligence and system health.</p>
+                    <h2 className="text-3xl font-black text-white tracking-tighter italic uppercase">System Overview</h2>
+                    <p className="text-slate-400 text-sm">Real-time operational intelligence.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-medium text-emerald-400">
@@ -62,8 +62,49 @@ export default function CommandCenter() {
                 </div>
             </div>
 
+            {/* Predictive Intelligence */}
+            <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Demand Surge */}
+                    <div className="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-indigo-900/10 p-6 backdrop-blur-sm group hover:border-indigo-500/50 transition-colors">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <svg className="text-indigo-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="px-2 py-1 rounded-md bg-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wider">Demand Surge</span>
+                                <span className="text-xs text-indigo-200/60">Confidence: 94%</span>
+                            </div>
+                            <h4 className="text-xl font-bold text-white mb-1">Product X-200</h4>
+                            <p className="text-indigo-200 text-sm mb-4">Demand expected to rise by <span className="font-bold text-white">40%</span> next week due to seasonal trends.</p>
+                            <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
+                                View Forecast Details <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Large Order Forecast */}
+                    <div className="relative overflow-hidden rounded-2xl border border-violet-500/30 bg-violet-900/10 p-6 backdrop-blur-sm group hover:border-violet-500/50 transition-colors">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <svg className="text-violet-400 w-24 h-24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" /></svg>
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="px-2 py-1 rounded-md bg-violet-500/20 text-violet-300 text-xs font-bold uppercase tracking-wider">Incoming Bulk</span>
+                                <span className="text-xs text-violet-200/60">Est: Friday</span>
+                            </div>
+                            <h4 className="text-xl font-bold text-white mb-1">Branch Y (Downtown)</h4>
+                            <p className="text-violet-200 text-sm mb-4">Predicted large stock request of <span className="font-bold text-white">500 units</span> for Item Z.</p>
+                            <button className="text-xs font-medium text-violet-400 hover:text-violet-300 flex items-center gap-1 transition-colors">
+                                Prepare Allocation <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Recent Activity / System Log */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 <div className="rounded-2xl border border-slate-800 bg-slate-900/30 flex flex-col backdrop-blur-sm">
                     <div className="border-b border-slate-800 px-6 py-4">
                         <h3 className="text-sm font-semibold text-white">Recent System Activity</h3>
@@ -88,39 +129,6 @@ export default function CommandCenter() {
                     </div>
                     <div className="mt-auto border-t border-slate-800 px-6 py-3">
                         <button className="text-xs text-emerald-400 hover:text-emerald-300 font-medium">View Full Log &rarr;</button>
-                    </div>
-                </div>
-
-                {/* Quick Actions Panel */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-900/30 flex flex-col backdrop-blur-sm">
-                    <div className="border-b border-slate-800 px-6 py-4">
-                        <h3 className="text-sm font-semibold text-white">Quick Actions</h3>
-                    </div>
-                    <div className="p-6 grid grid-cols-2 gap-4">
-                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-slate-800 transition-all group">
-                            <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                            </div>
-                            <span className="text-sm font-medium text-slate-300">Add Item</span>
-                        </button>
-                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-slate-800 transition-all group">
-                            <div className="h-10 w-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
-                            </div>
-                            <span className="text-sm font-medium text-slate-300">Import CSV</span>
-                        </button>
-                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-slate-800 transition-all group">
-                            <div className="h-10 w-10 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4" /><polyline points="14 2 14 8 20 8" /><path d="M2 15h10" /><path d="M9 18l3-3-3-3" /></svg>
-                            </div>
-                            <span className="text-sm font-medium text-slate-300">Run Forecast</span>
-                        </button>
-                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-800 bg-slate-900/50 hover:bg-slate-800 transition-all group">
-                            <div className="h-10 w-10 rounded-full bg-slate-500/10 flex items-center justify-center text-slate-500 group-hover:bg-slate-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33h.09a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
-                            </div>
-                            <span className="text-sm font-medium text-slate-300">Settings</span>
-                        </button>
                     </div>
                 </div>
             </div>
