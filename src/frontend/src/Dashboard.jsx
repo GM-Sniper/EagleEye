@@ -145,6 +145,7 @@ const Dashboard = () => {
     const [backtestLoading, setBacktestLoading] = useState(false);
     const [forecastScenario, setForecastScenario] = useState('baseline');
     const [notification, setNotification] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
 
     useEffect(() => {
         const hasSeenTour = localStorage.getItem('eagleeye_tour_complete');
@@ -734,6 +735,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
 
+
                                 {/* Scenario Planning Card */}
                                 <div className="glass-card p-10 rounded-[2.5rem] bg-gradient-to-br from-slate-900/30 to-primary-900/10 border-t border-primary-500/20 shadow-[0_-20px_40px_rgba(15,23,42,0.5)]">
                                     <div className="flex flex-col gap-10">
@@ -752,8 +754,8 @@ const Dashboard = () => {
                                                         key={s.id}
                                                         onClick={() => setForecastScenario(s.id)}
                                                         className={`px-6 py-3 rounded-xl text-[10px] font-black tracking-widest transition-all ${forecastScenario === s.id
-                                                                ? 'bg-primary-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]'
-                                                                : 'text-slate-500 hover:text-slate-300'
+                                                            ? 'bg-primary-600 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]'
+                                                            : 'text-slate-500 hover:text-slate-300'
                                                             }`}
                                                     >
                                                         {s.label}
@@ -862,7 +864,7 @@ const Dashboard = () => {
           animation: float 4s ease-in-out infinite;
         }
       `}</style>
-        </div>
+        </div >
     );
 };
 
