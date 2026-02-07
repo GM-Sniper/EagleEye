@@ -10,7 +10,9 @@ import {
     TrendingDown,
     Activity,
     Clock,
-    Target
+    Target,
+    Star,
+    Gift
 } from 'lucide-react';
 import {
     AreaChart,
@@ -25,6 +27,7 @@ import {
 
 export const ForecastingPage = () => {
     const [events, setEvents] = useState([]);
+    const [activeEvents, setActiveEvents] = useState([]);
     const [backtestData, setBacktestData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [horizon, setHorizon] = useState(14); // 7, 14, 30
@@ -39,6 +42,7 @@ export const ForecastingPage = () => {
                     ForecastService.getBacktest(horizon)
                 ]);
                 setEvents(eventRes.events);
+                setActiveEvents(eventRes.active_events || []);
                 setBacktestData(backtestRes);
             } catch (err) {
                 console.error("Failed to fetch forecast data", err);
@@ -52,7 +56,9 @@ export const ForecastingPage = () => {
     const getEventIcon = (type) => {
         switch (type) {
             case 'ramadan': return <Moon className="w-5 h-5 text-purple-400" />;
-            case 'holiday': return <Sun className="w-5 h-5 text-yellow-400" />;
+            case 'eid': return <Star className="w-5 h-5 text-yellow-400" />;
+            case 'christmas': return <Gift className="w-5 h-5 text-red-400" />;
+            case 'holiday': return <Sun className="w-5 h-5 text-orange-400" />;
             default: return <Calendar className="w-5 h-5 text-gray-400" />;
         }
     };
@@ -306,19 +312,29 @@ export const ForecastingPage = () => {
                 </div>
             </div>
 
-            {/* Bottom Alert Banner */}
-            <Card className="bg-zinc-900 border-white/5 relative overflow-hidden">
-                <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-10 h-10 rounded-full bg-eagle-green/20 flex items-center justify-center ring-1 ring-eagle-green/30">
-                        <AlertTriangle className="w-5 h-5 text-eagle-green" />
+            {/* Bottom Alert Banner - Dynamic */}
+            {activeEvents.length > 0 && (
+                <Card className="bg-zinc-900 border-white/5 relative overflow-hidden">
+                    <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-10 h-10 rounded-full bg-eagle-green/20 flex items-center justify-center ring-1 ring-eagle-green/30">
+                            <AlertTriangle className="w-5 h-5 text-eagle-green" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-white">
+                                {activeEvents.includes('Ramadan') ? 'Proprietary Ramadan Model v2.4 Active' :
+                                    activeEvents.includes('Eid al-Fitr') || activeEvents.includes('Eid al-Adha') ? 'Eid Demand Spike Detected' :
+                                        activeEvents.includes('Christmas') ? 'Holiday Season Model Active' : 'Special Event Model Active'}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                {activeEvents.includes('Ramadan') ? 'Automatically adjusting demand by 15% during daylight windows based on historical transaction density.' :
+                                    activeEvents.some(e => e.includes('Eid')) ? 'High-demand period active. Multipliers set to 1.5x across retail categories.' :
+                                        'Real-time demand adjustments active for detected special events.'}
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-sm font-bold text-white">Proprietary Ramadan Model v2.4 Active</p>
-                        <p className="text-xs text-gray-500">Automatically adjusting demand by 15% during daylight windows based on historical transaction density.</p>
-                    </div>
-                </div>
-                <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-eagle-green/5 to-transparent" />
-            </Card>
+                    <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-eagle-green/5 to-transparent" />
+                </Card>
+            )}
         </div>
     );
 };

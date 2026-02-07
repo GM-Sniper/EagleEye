@@ -14,6 +14,8 @@ from functools import lru_cache
 import pandas as pd
 import numpy as np
 import sys
+import pickle
+import os
 from pathlib import Path
 
 # Add src to path for imports
@@ -149,8 +151,43 @@ async def startup():
     print("🚀 Initializing EagleEye API...")
     
     try:
-        # Load data
         data_dir = Path(__file__).parent.parent / "Data"
+        cache_dir = Path(__file__).parent.parent / "cache"
+        cache_dir.mkdir(exist_ok=True)
+        cache_file = cache_dir / "api_state.pkl"
+        
+        # Check for cache
+        if cache_file.exists():
+            print(f"📦 Loading state from cache: {cache_file}")
+            try:
+                with open(cache_file, 'rb') as f:
+                    cached_data = pickle.load(f)
+                
+                # Restore Global State
+                state.daily_demand = cached_data['daily_demand']
+                state.item_stats = cached_data['item_stats']
+                state.orders = cached_data['orders']
+                state.order_items = cached_data['order_items']
+                state.forecaster = cached_data['forecaster']
+                state.hybrid_forecaster = cached_data['hybrid_forecaster']
+                
+                # Restore Pipeline
+                state.pipeline = DataPipeline(data_dir=str(data_dir))
+                state.pipeline._orders = state.orders
+                state.pipeline._order_items = state.order_items
+                state.pipeline._items = cached_data['items']
+                state.pipeline._inventory_snapshot = cached_data['inventory_snapshot']
+                
+                # Init Service
+                state.inventory_service = InventoryService(forecaster=state.hybrid_forecaster)
+                
+                state.is_initialized = True
+                print("✅ EagleEye API ready (Cached Mode)!")
+                return
+            except Exception as e:
+                print(f"⚠️ Cache load failed: {e}. Falling back to clean start.")
+        
+        # Fresh Initialization
         state.pipeline = DataPipeline(data_dir=str(data_dir))
         state.pipeline.load_all()
         state.pipeline.load_core_tables()
@@ -175,7 +212,29 @@ async def startup():
         # Initialize inventory service with hybrid model
         state.inventory_service = InventoryService(forecaster=state.hybrid_forecaster)
         
+        # Generate snapshot to cache
+        snapshot = state.pipeline.get_inventory_snapshot()
+        
         state.is_initialized = True
+        
+        # Save to cache
+        print("💾 Saving state to cache...")
+        try:
+            with open(cache_file, 'wb') as f:
+                pickle.dump({
+                    'daily_demand': state.daily_demand,
+                    'item_stats': state.item_stats,
+                    'orders': state.orders,
+                    'order_items': state.order_items,
+                    'items': state.pipeline.items,
+                    'inventory_snapshot': snapshot,
+                    'forecaster': state.forecaster,
+                    'hybrid_forecaster': state.hybrid_forecaster
+                }, f)
+            print("✅ Cache saved successfully.")
+        except Exception as e:
+            print(f"⚠️ Failed to save cache: {e}")
+            
         print("✅ EagleEye API ready!")
         
     except Exception as e:
@@ -890,13 +949,14 @@ async def get_discount_recommendations():
     check_initialized()
     
     try:
-        pricing = PricingService(state.pipeline.get_inventory_snapshot())
-        recommendations = pricing.get_discount_recommendations()
+        snapshot = state.pipeline.get_inventory_snapshot() 
+        service = PricingService(snapshot, forecaster=state.hybrid_forecaster)
+        recommendations = service.get_discount_recommendations()
         
         return {
             "recommendations": recommendations,
             "count": len(recommendations),
-            "summary": pricing.get_summary(),
+            "summary": service.get_summary(),
             "generated_at": datetime.now().isoformat()
         }
     except Exception as e:
@@ -1063,15 +1123,29 @@ from utils.holiday_detector import HolidayDetector
 
 @app.get("/forecast/events", tags=["Forecasting"])
 async def get_upcoming_events(
-    days_ahead: int = Query(14, ge=1, le=60, description="Days to look ahead for events")
+    days_ahead: int = Query(14, ge=1, le=120, description="Days to look ahead for events")
 ):
     """Get upcoming holidays and special events that may affect demand."""
     try:
         detector = HolidayDetector()
         events = detector.get_upcoming_events(days_ahead)
         
+        # Check for currently active events
+        active_events = []
+        # today = date(2024, 4, 10) # date.today() MOCKED FOR EID TEST
+        today = date.today()
+        if detector.is_ramadan(today):
+            active_events.append("Ramadan")
+        if detector.is_eid_fitr(today):
+            active_events.append("Eid al-Fitr")
+        if detector.is_eid_adha(today):
+            active_events.append("Eid al-Adha")
+        if detector.is_western_christmas(today) or detector.is_coptic_christmas(today):
+            active_events.append("Christmas")
+            
         return {
             "events": events,
+            "active_events": active_events,
             "count": len(events),
             "days_ahead": days_ahead,
             "generated_at": datetime.now().isoformat()
@@ -1102,6 +1176,8 @@ async def get_demand_factors(
                 'day_name': check_date.strftime('%A'),
                 'is_holiday': detector.is_holiday(check_date),
                 'is_ramadan': detector.is_ramadan(check_date),
+                'is_eid': detector.is_eid_fitr(check_date) or detector.is_eid_adha(check_date),
+                'is_christmas': detector.is_western_christmas(check_date) or detector.is_coptic_christmas(check_date),
                 'is_end_of_month': detector.is_end_of_month(check_date),
                 'holiday_name': detector.get_holiday_name(check_date),
                 'demand_multiplier': detector.get_demand_multiplier(check_date)
