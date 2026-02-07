@@ -164,3 +164,64 @@ class InventoryService:
             'healthy_items': len(analysis_df[analysis_df['status'] == 'HEALTHY']),
             'abc_distribution': analysis_df['abc_class'].value_counts().to_dict()
         }
+
+    def get_filtered_inventory(self, inventory_df: pd.DataFrame, status: str = None, search_term: str = None, limit: int = 1000) -> List[Dict]:
+        """
+        Efficiently filter inventory snapshot and generate recommendations.
+        """
+        # Work on a view/copy
+        df = inventory_df
+
+        # 1. Filter by Status
+        if status and status.upper() != 'ALL':
+            df = df[df['status'] == status.upper()]
+
+        # 2. Filter by Search
+        if search_term:
+            term = search_term.lower()
+            # Search in item_name or item_id
+            # Ensure string types for safety
+            mask = (
+                df['item_name'].astype(str).str.lower().str.contains(term, na=False) | 
+                df['item_id'].astype(str).str.contains(term)
+            )
+            df = df[mask]
+
+        if df.empty:
+            return []
+
+        # 3. Generate Recommendations (Vectorized)
+        # Copy to avoid SettingWithCopy warning on the slice
+        df = df.copy()
+        
+        conditions = [
+            df['status'] == 'CRITICAL',
+            df['status'] == 'UNDERSTOCKED',
+            df['status'] == 'OVERSTOCKED'
+        ]
+        choices = [
+            "🔥 CRITICAL: Reorder immediately!",
+            "⚠️ Order soon. Below reorder point.",
+            "🧊 Overstocked. Pause reorders."
+        ]
+        df['recommendation'] = np.select(conditions, choices, default="✅ Healthy stock level.")
+
+        # 4. Apply Discount Logic (User Request)
+        # If Overstocked AND Discountable -> Recommend Discount
+        # Ensure discountable column exists and handle NaNs
+        if 'discountable' in df.columns:
+            # check for 1 or True
+            discount_mask = (df['status'] == 'OVERSTOCKED') & (df['discountable'].fillna(0).astype(int) == 1)
+            df.loc[discount_mask, 'recommendation'] = "💸 Overstocked! Recommend: Promote/Discount"
+
+        # 5. Formatting & Calculation
+        # Add stock_percentage for frontend
+        if 'capacity' in df.columns and 'current_stock' in df.columns:
+             # Avoid division by zero
+             df['stock_percentage'] = (df['current_stock'] / df['capacity'].replace(0, 1) * 100).round(1)
+        
+        # Limit results (optimization)
+        if limit:
+            df = df.head(limit)
+            
+        return df.to_dict('records')

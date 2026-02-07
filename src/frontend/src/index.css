@@ -3,13 +3,14 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #0f172a;
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.92);
+  background-color: #050505;
+  /* Deep Black */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,39 +20,66 @@
 
 body {
   margin: 0;
-  display: flex;
-  place-content: center;
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
+  background-color: #050505;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(0, 224, 84, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(0, 224, 84, 0.05) 0%, transparent 30%);
 }
 
-.glass {
-  background: rgba(30, 41, 59, 0.7);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0f11;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Glass Utilities */
+.glass-panel {
+  background: rgba(24, 24, 27, 0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-card {
-  background: rgba(30, 41, 59, 0.5);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
+  background: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
+  background: rgba(24, 24, 27, 0.6);
+  border: 1px solid rgba(0, 224, 84, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.7);
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+/* Text Gradients */
+.text-gradient {
+  background: linear-gradient(to right, #ffffff, #a1a1aa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
+.text-gradient-primary {
+  background: linear-gradient(to right, #00E054, #4ade80);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
