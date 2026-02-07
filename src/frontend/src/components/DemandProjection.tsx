@@ -1,35 +1,24 @@
 import React, { useEffect, useState, useMemo } from "react";
 
-// --- Mock Data ---
+// --- Types ---
 type Timeframe = 'Tomorrow' | 'Next 7 Days' | 'Next 14 Days' | 'Next 28 Days';
+type ForecastPoint = { label: string, actual: number | null, predicted: number };
 
-const FORECAST_DATA: Record<Timeframe, { label: string, actual: number | null, predicted: number }[]> = {
-    'Tomorrow': [
-        { label: '08:00', actual: 12, predicted: 15 },
-        { label: '12:00', actual: 45, predicted: 48 },
-        { label: '16:00', actual: 30, predicted: 35 },
-        { label: '20:00', actual: null, predicted: 60 },
-    ],
-    'Next 7 Days': [
-        { label: 'Mon', actual: 40, predicted: 42 },
-        { label: 'Tue', actual: 35, predicted: 38 },
-        { label: 'Wed', actual: 50, predicted: 48 },
-        { label: 'Thu', actual: 45, predicted: 55 },
-        { label: 'Fri', actual: 60, predicted: 75 },
-        { label: 'Sat', actual: null, predicted: 85 },
-        { label: 'Sun', actual: null, predicted: 90 },
-    ],
-    'Next 14 Days': Array.from({ length: 14 }, (_, i) => ({
-        label: `Day ${i + 1}`,
-        actual: i < 7 ? 40 + (i * 2) + Math.random() * 10 : null,
-        predicted: 45 + (i * 3)
-    })),
-    'Next 28 Days': Array.from({ length: 14 }, (_, i) => ({
-        label: `W${Math.floor(i / 7) + 1} D${(i % 7) + 1}`,
-        actual: i < 10 ? 30 + (i * 1.5) : null,
-        predicted: 35 + (i * 2)
-    }))
+// API endpoint
+const API_BASE = 'http://localhost:8004';
+
+// Timeframe to days
+const TIMEFRAME_DAYS: Record<Timeframe, number> = {
+    'Tomorrow': 1,
+    'Next 7 Days': 7,
+    'Next 14 Days': 14,
+    'Next 28 Days': 28
 };
+
+// Fallback mock data (shown while loading)
+const MOCK_FORECAST: ForecastPoint[] = [
+    { label: 'Loading...', actual: null, predicted: 0 },
+];
 
 const MOVERS = [
     { name: "Avocados (Hass)", change: "+200%", trend: "up", reason: "Viral Recipe Trend" },
@@ -99,16 +88,47 @@ export default function DemandProjection() {
     const [storeSearch, setStoreSearch] = useState("");
     const [itemSearch, setItemSearch] = useState("");
 
+    // API data state
+    const [forecastData, setForecastData] = useState<ForecastPoint[]>(MOCK_FORECAST);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch forecast from API when timeframe changes
+    useEffect(() => {
+        const fetchForecast = async () => {
+            setLoading(true);
+            try {
+                const days = TIMEFRAME_DAYS[activeTimeframe];
+                const res = await fetch(`${API_BASE}/api/forecast?days=${days}`);
+                const json = await res.json();
+
+                // Convert API response to chart format
+                const chartData: ForecastPoint[] = json.forecast.map((f: { date: string; predicted: number; actual: number | null }) => ({
+                    label: f.date.substring(5), // MM-DD format
+                    actual: f.actual,
+                    predicted: f.predicted
+                }));
+
+                setForecastData(chartData.length > 0 ? chartData : MOCK_FORECAST);
+            } catch (err) {
+                console.error('Failed to fetch forecast:', err);
+                // Keep previous data on error
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchForecast();
+    }, [activeTimeframe]);
+
     useEffect(() => {
         setAnimateChart(false);
         const timer = setTimeout(() => setAnimateChart(true), 100);
         return () => clearTimeout(timer);
     }, [activeTimeframe, selectedItem, selectedStore]);
 
-    const data = FORECAST_DATA[activeTimeframe];
+    const data = forecastData;
 
-    const filteredStores = STORES.filter(store => store.toLowerCase().includes(storeSearch.toLowerCase()));
-    const filteredItems = ITEMS.filter(item => item.toLowerCase().includes(itemSearch.toLowerCase()));
+    const filteredStores = STORES.filter((store: string) => store.toLowerCase().includes(storeSearch.toLowerCase()));
+    const filteredItems = ITEMS.filter((item: string) => item.toLowerCase().includes(itemSearch.toLowerCase()));
 
     // Calculate chart bounds
     const chartBounds = useMemo(() => {
