@@ -1,13 +1,10 @@
 # Testing Scripts
 
 ## Backtest script
-
-This script tests whether the forecasters are functional or not
+This script validates the functionality and accuracy of the forecasting models. It runs a historical backtest to compare predicted demand against actual sales data, generating performance metrics to ensure model reliability.
 
 ## SmokeAPI script
-
-This script tests where the api endpoints are functional and accurate
+This script verifies the health and accuracy of the API endpoints. It performs a series of request-response checks to ensure all backend services are running correctly and returning expected data structures.
 
 ## Smoke Script
-
-Mini test for the global forcaster
+A lightweight connectivity test for the global forecasting model. It runs a quick prediction cycle to confirm the model is loaded and responsive without performing a full-scale backtest.
