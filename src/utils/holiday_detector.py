@@ -18,48 +18,47 @@ class HolidayDetector:
     # Fixed Egyptian holidays (month, day)
     FIXED_HOLIDAYS = {
         (1, 1): "New Year's Day",
-        (1, 7): "Coptic Christmas",
         (1, 25): "Revolution Day",
         (4, 25): "Sinai Liberation Day",
         (5, 1): "Labour Day",
         (6, 30): "June 30 Revolution",
         (7, 23): "Revolution Day (1952)",
         (10, 6): "Armed Forces Day",
+        (12, 25): "Christmas",
     }
     
     # Islamic holidays (approximate - shift by ~11 days each year)
-    # These are placeholder dates for 2024-2026, should use hijri calendar for accuracy
     ISLAMIC_HOLIDAYS_2024 = {
-        (4, 9): "Eid al-Fitr Day 1",
-        (4, 10): "Eid al-Fitr Day 2",
-        (4, 11): "Eid al-Fitr Day 3",
-        (6, 16): "Eid al-Adha Day 1",
-        (6, 17): "Eid al-Adha Day 2",
-        (6, 18): "Eid al-Adha Day 3",
-        (6, 19): "Eid al-Adha Day 4",
         (9, 15): "Prophet's Birthday (Mawlid)",
     }
     
     ISLAMIC_HOLIDAYS_2025 = {
-        (3, 30): "Eid al-Fitr Day 1",
-        (3, 31): "Eid al-Fitr Day 2",
-        (4, 1): "Eid al-Fitr Day 3",
-        (6, 6): "Eid al-Adha Day 1",
-        (6, 7): "Eid al-Adha Day 2",
-        (6, 8): "Eid al-Adha Day 3",
-        (6, 9): "Eid al-Adha Day 4",
         (9, 4): "Prophet's Birthday (Mawlid)",
     }
     
     ISLAMIC_HOLIDAYS_2026 = {
-        (3, 20): "Eid al-Fitr Day 1",
-        (3, 21): "Eid al-Fitr Day 2",
-        (3, 22): "Eid al-Fitr Day 3",
-        (5, 27): "Eid al-Adha Day 1",
-        (5, 28): "Eid al-Adha Day 2",
-        (5, 29): "Eid al-Adha Day 3",
-        (5, 30): "Eid al-Adha Day 4",
         (8, 25): "Prophet's Birthday (Mawlid)",
+    }
+    
+    # Coptic Christmas Dates (Fixed, but treating as range for consistency if needed, though usually just 1 day)
+    COPTIC_CHRISTMAS_DATES = {
+        2024: (date(2024, 1, 7), date(2024, 1, 7)),
+        2025: (date(2025, 1, 7), date(2025, 1, 7)),
+        2026: (date(2026, 1, 7), date(2026, 1, 7)),
+    }
+
+    # Eid al-Fitr Dates (7 days starting day after Ramadan)
+    EID_AL_FITR_DATES = {
+        2024: (date(2024, 4, 9), date(2024, 4, 15)),
+        2025: (date(2025, 3, 30), date(2025, 4, 5)),
+        2026: (date(2026, 3, 20), date(2026, 3, 26)),
+    }
+
+    # Eid al-Adha Dates (7 days starting Day 1)
+    EID_AL_ADHA_DATES = {
+        2024: (date(2024, 6, 16), date(2024, 6, 22)),
+        2025: (date(2025, 6, 6), date(2025, 6, 12)),
+        2026: (date(2026, 5, 27), date(2026, 6, 2)),
     }
     
     # Ramadan approximate dates (start, end) for 2024-2026
@@ -109,7 +108,14 @@ class HolidayDetector:
             check_date = check_date.date()
         
         holidays = self._get_holidays_for_year(check_date.year)
-        return check_date in holidays
+        if check_date in holidays:
+            return True
+            
+        # Check range-based holidays
+        if self.is_eid_fitr(check_date) or self.is_eid_adha(check_date) or self.is_coptic_christmas(check_date):
+            return True
+            
+        return False
     
     def is_ramadan(self, check_date: date) -> bool:
         """Check if a date falls within Ramadan."""
@@ -121,6 +127,34 @@ class HolidayDetector:
             start, end = ramadan
             return start <= check_date <= end
         return False
+
+    def _is_in_range(self, check_date: date, ranges: Dict[int, tuple]) -> bool:
+        """Helper to check if date is in a year-based range dictionary."""
+        date_range = ranges.get(check_date.year)
+        if date_range:
+            start, end = date_range
+            return start <= check_date <= end
+        return False
+
+    def is_eid_fitr(self, check_date: date) -> bool:
+        if isinstance(check_date, datetime):
+            check_date = check_date.date()
+        return self._is_in_range(check_date, self.EID_AL_FITR_DATES)
+
+    def is_eid_adha(self, check_date: date) -> bool:
+        if isinstance(check_date, datetime):
+            check_date = check_date.date()
+        return self._is_in_range(check_date, self.EID_AL_ADHA_DATES)
+
+    def is_coptic_christmas(self, check_date: date) -> bool:
+        if isinstance(check_date, datetime):
+            check_date = check_date.date()
+        return self._is_in_range(check_date, self.COPTIC_CHRISTMAS_DATES)
+    
+    def is_western_christmas(self, check_date: date) -> bool:
+        if isinstance(check_date, datetime):
+            check_date = check_date.date()
+        return check_date.month == 12 and check_date.day == 25
     
     def is_end_of_month(self, check_date: date) -> bool:
         """Check if date is near end of month (potential pay-day spike)."""
@@ -148,6 +182,14 @@ class HolidayDetector:
         
         if key in islamic_holidays:
             return islamic_holidays[key]
+            
+        # Check range-based holidays
+        if self.is_eid_fitr(check_date):
+            return "Eid al-Fitr"
+        if self.is_eid_adha(check_date):
+            return "Eid al-Adha"
+        if self.is_coptic_christmas(check_date):
+            return "Coptic Christmas"
         
         return None
     
@@ -194,7 +236,7 @@ class HolidayDetector:
         
         # Eid holidays: high demand period
         holiday_name = self.get_holiday_name(check_date)
-        if holiday_name and 'Eid' in str(holiday_name):
+        if holiday_name and ('Eid' in str(holiday_name) or 'Christmas' in str(holiday_name)):
             multiplier *= 1.5  # Major celebrations
         elif holiday_name:
             multiplier *= 1.2  # Other holidays
@@ -215,10 +257,16 @@ class HolidayDetector:
             holiday_name = self.get_holiday_name(check_date)
             
             if holiday_name:
+                event_type = 'holiday'
+                if 'Eid' in str(holiday_name):
+                    event_type = 'eid'
+                elif 'Christmas' in str(holiday_name):
+                    event_type = 'christmas'
+                    
                 events.append({
                     'date': check_date.isoformat(),
                     'event': holiday_name,
-                    'type': 'holiday',
+                    'type': event_type,
                     'demand_multiplier': self.get_demand_multiplier(check_date)
                 })
             elif self.is_ramadan(check_date) and (i == 0 or not self.is_ramadan(today + timedelta(days=i-1))):
@@ -228,6 +276,21 @@ class HolidayDetector:
                     'type': 'ramadan',
                     'demand_multiplier': 0.85
                 })
+            
+            # Check for range-based events (Eid, Coptic Christmas)
+            # Show if: 
+            # 1. It is the start of the event (standard lookahead)
+            # 2. OR if i==0 (today) and the event is active (so it shows up in the list even if it started yesterday)
+            elif self.is_eid_fitr(check_date):
+                 if i == 0 or not self.is_eid_fitr(today + timedelta(days=i-1)):
+                    events.append({'date': check_date.isoformat(), 'event': 'Eid al-Fitr', 'type': 'eid', 'demand_multiplier': 1.5})
+            elif self.is_eid_adha(check_date):
+                if i == 0 or not self.is_eid_adha(today + timedelta(days=i-1)):
+                    events.append({'date': check_date.isoformat(), 'event': 'Eid al-Adha', 'type': 'eid', 'demand_multiplier': 1.5})
+            elif self.is_coptic_christmas(check_date):
+                if i == 0 or not self.is_coptic_christmas(today + timedelta(days=i-1)):
+                    events.append({'date': check_date.isoformat(), 'event': 'Coptic Christmas', 'type': 'christmas', 'demand_multiplier': 1.5})
+                events.append({'date': check_date.isoformat(), 'event': 'Coptic Christmas', 'type': 'christmas', 'demand_multiplier': 1.5})
         
         return events
 

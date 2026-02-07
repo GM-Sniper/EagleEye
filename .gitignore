@@ -4,3 +4,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .env
+deloitte/
+cache/
+cache_old/
+*.pkl
+cache/

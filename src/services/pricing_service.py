@@ -15,14 +15,16 @@ class PricingService:
     Analyzes inventory levels and item profitability to suggest pricing actions.
     """
     
-    def __init__(self, inventory_snapshot: pd.DataFrame):
+    def __init__(self, inventory_snapshot: pd.DataFrame, forecaster=None):
         """
         Initialize with inventory snapshot.
         
         Args:
             inventory_snapshot: DataFrame from DataPipeline.get_inventory_snapshot()
+            forecaster: Optional HybridForecaster instance for demand prediction
         """
         self.inventory = inventory_snapshot.copy()
+        self.forecaster = forecaster
     
     def get_discount_recommendations(
         self, 
@@ -38,11 +40,16 @@ class PricingService:
         
         Args:
             max_discount_pct: Maximum discount percentage to recommend
-            min_excess_ratio: Minimum stock/capacity ratio to consider overstocked
+            min_excess_ratio: Minimum stock/capacity ratio
             
         Returns:
             List of discount recommendations
         """
+        # Identify items that need clearing and suggest discounts.
+        # Logic: 
+        # 1. Base Discount = 1% for every 1% utilization > 80%.
+        # 2. Final Discount = Base Discount / Predicted Daily Demand.
+        
         # Filter for overstocked, discountable items
         df = self.inventory.copy()
         
@@ -52,59 +59,131 @@ class PricingService:
         
         df['discountable'] = df['discountable'].fillna(True).astype(bool)
         
-        overstocked = df[
-            (df['status'] == 'OVERSTOCKED') & 
-            (df['discountable'] == True)
-        ]
+        # Filter for items with utilization > 80% (User definition of overstock for discount)
+        # using capacity fallback if needed (though pipeline ensures capacity)
+        # We calculate utilization first to filter
+        
+        # Ensure conversion to numeric
+        df['current_stock'] = pd.to_numeric(df['current_stock'], errors='coerce').fillna(0)
+        df['capacity'] = pd.to_numeric(df['capacity'], errors='coerce').fillna(1) # avoid div0
+        
+        # Calculate utilization
+        df['utilization'] = df['current_stock'] / df['capacity']
+        
+        # Filter: Utilization > 0.8 AND Discountable
+        overstocked_mask = (df['utilization'] > 0.8) & (df['discountable'] == True)
+        overstocked_df = df[overstocked_mask].copy()
+        
+        # Pre-sort by utilization to prioritize calculation for most critical items
+        overstocked_df.sort_values('utilization', ascending=False, inplace=True)
+        
+        # Limit to top 400 candidates to keep performance high
+        candidates = overstocked_df.head(400)
         
         recommendations = []
         
-        for _, row in overstocked.iterrows():
-            # Calculate excess ratio (how much over capacity)
-            capacity = row.get('capacity', row.get('mean_daily', 1) * 7)
+        # Optimization: Apply limit early if possible, but we need to calculate discounts to sort.
+        # We process all overstocked (subset of total items), then sort and slice.
+        
+        for _, row in candidates.iterrows():
+        
+            # Calculate utilization ratio (Stock / Capacity)
+            # User defined "stock divided by the demand" (interpreted as Capacity which is demand-based)
+            # Threshold is 80%
+            capacity = row.get('capacity', 0)
+            if capacity <= 0:
+                continue
+
             current = row.get('current_stock', 0)
-            excess_ratio = current / max(capacity, 1)
+            item_id = int(row.get('item_id', 0))
             
-            # Skip if not actually overstocked
-            if excess_ratio < min_excess_ratio:
+            # Utilization ratio (e.g. 0.9 = 90%)
+            utilization = current / capacity
+            excess_ratio = utilization # For compatibility with sorting logic
+            
+            # "above 80% of the stock"
+            threshold = 0.80
+            
+            if utilization <= threshold:
+                continue
+                
+            # "1% for every 1 percentage above 80%"
+            # Excess percentage points
+            excess_percentage_points = (utilization - threshold) * 100
+            
+            base_discount = int(round(excess_percentage_points))
+            
+            if base_discount <= 0:
                 continue
             
-            # Calculate suggested discount (10-30% based on severity)
-            # More excess = higher discount
-            excess_severity = min((excess_ratio - min_excess_ratio) / 0.3, 1.0)  # 0-1 scale
-            suggested_discount = int(10 + (excess_severity * (max_discount_pct - 10)))
+            # --- INCORPORATE PREDICTED DEMAND ---
+            predicted_daily_demand = 1.0 # Default fallback
+            
+            if self.forecaster:
+                try:
+                    # Use Global Model for speed (avoid training local model)
+                    # Predict next 7 days
+                    forecast = self.forecaster.global_model.predict(item_id, 7)
+                    if not forecast.empty and 'predicted_demand' in forecast.columns:
+                        predicted_daily_demand = forecast['predicted_demand'].mean()
+                        # Ensure we don't divide by zero or negative
+                        predicted_daily_demand = max(predicted_daily_demand, 0.1)
+                except Exception as e:
+                    print(f"Prediction failed for {item_id}: {e}")
+                    # Fallback to mean_daily from snapshot if model fails
+                    predicted_daily_demand = max(row.get('mean_daily', 1.0), 0.1)
+            else:
+                 predicted_daily_demand = max(row.get('mean_daily', 1.0), 0.1)
+            
+            # Final Formula: Discount / Predicted Demand
+            # e.g. Base 20% / Demand 10 = 2%
+            # e.g. Base 20% / Demand 0.5 = 40%
+            
+            adjusted_discount = base_discount / predicted_daily_demand
+            
+            suggested_discount = int(round(adjusted_discount))
+            
+            # Apply safety cap (default 30% from function arg)
+            suggested_discount = min(suggested_discount, max_discount_pct)
+            
+            if suggested_discount <= 0:
+                continue
             
             # Calculate potential revenue impact
             price = row.get('price', 0) or 0
-            daily_demand = row.get('mean_daily', 0) or 0
+            daily_demand = predicted_daily_demand # Use the predicted demand for consistency
             
             # Estimate demand increase from discount (simple elasticity model)
-            demand_multiplier = 1 + (suggested_discount / 100) * 1.5  # 1.5x elasticity
+            demand_multiplier = 1 + (suggested_discount / 100) * 1.5
             projected_daily_revenue_before = price * daily_demand
             projected_daily_revenue_after = (price * (1 - suggested_discount/100)) * (daily_demand * demand_multiplier)
             
-            # Days to clear excess stock
-            excess_units = max(0, current - (capacity * 0.7))
+            # Days to clear excess stock (down to 80% level?)
+            # Or just clear the excess? Assuming clear to threshold.
+            target_stock = capacity * threshold
+            excess_units = current - target_stock
             days_to_clear = excess_units / max(daily_demand * demand_multiplier, 0.1)
             
             recommendations.append({
-                'item_id': int(row.get('item_id', 0)),
+                'item_id': item_id,
                 'item_name': str(row.get('item_name', 'Unknown'))[:50],
                 'current_stock': round(float(current), 1),
                 'capacity': round(float(capacity), 1),
                 'excess_ratio': round(float(excess_ratio), 2),
+                'predicted_demand': round(float(predicted_daily_demand), 2),
                 'current_price': round(float(price), 2),
                 'suggested_discount_pct': suggested_discount,
                 'discounted_price': round(float(price * (1 - suggested_discount/100)), 2),
                 'estimated_days_to_clear': round(float(days_to_clear), 1),
                 'abc_class': str(row.get('abc_class', 'N/A')),
-                'reason': 'Overstock clearance - reduce waste and free up storage',
-                'priority': 'HIGH' if excess_ratio > 1.1 else 'MEDIUM'
+                'reason': f'High utilization ({int(utilization*100)}%) vs Demand ({round(predicted_daily_demand, 1)})',
+                'priority': 'HIGH' if suggested_discount > 15 else 'MEDIUM'
             })
         
-        # Sort by excess ratio (most overstocked first)
-        recommendations.sort(key=lambda x: x['excess_ratio'], reverse=True)
+        # Sort by discount magnitude
+        recommendations.sort(key=lambda x: x['suggested_discount_pct'], reverse=True)
         
+        # Limit to top 100 items to keep response light
         return recommendations
     
     def get_pricing_optimization(self) -> List[Dict]:

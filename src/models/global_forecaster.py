@@ -321,6 +321,9 @@ class GlobalForecaster:
         self._log(f"✅ Global Model fitted on {len(df):,} rows across {df['item_id'].nunique():,} items")
         return self
 
+    from functools import lru_cache
+    
+    @lru_cache(maxsize=1024)
     def predict(self, item_id: int, horizon_days: int = 14) -> pd.DataFrame:
         """Recursive forecast for a SPECIFIC item using the global model."""
         if not self.is_fitted:
@@ -338,7 +341,11 @@ class GlobalForecaster:
         last_date = pd.to_datetime(item_history['date'].max())
         future_dates = [last_date + timedelta(days=i+1) for i in range(horizon_days)]
         
-        encoded_id = int(self.label_encoder.transform([item_id])[0])
+        if item_id not in self.label_encoder.classes_:
+             print(f"DEBUG: Item {item_id} unseen in training. Returning clean fallback.")
+             return pd.DataFrame()
+             
+        encoded_id = self.label_encoder.transform([item_id])[0]
         bias = self.bias_factors.get(item_id, 1.0)
         bias = np.clip(bias, 0.8, 1.2) # Safety clip
         
