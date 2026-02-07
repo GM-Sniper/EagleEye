@@ -53,7 +53,12 @@ Instant notifications for high-priority issues such as stock checkouts, high dem
 > ![Alerts System Screenshot](docs/screenshots/alerts.png)
 > *Priority alerts for immediate action.*
 
-### 6. Insightful Analytics
+### 6. Dynamic Pricing Engine
+Automated discount recommendations for overstocked items, calculated based on utilization rates and predicted demand to maximize revenue while clearing inventory.
+> ![Pricing System Screenshot](docs/screenshots/pricing.png)
+> *AI-driven discount optimization.*
+
+### 7. Insightful Analytics
 Comprehensive dashboards tracking revenue, order volume, and model accuracy metrics (MAPE).
 > ![Analytics Dashboard Screenshot](docs/screenshots/dashboard_overview.png)
 > *High-level KPIs and business health metrics.*
