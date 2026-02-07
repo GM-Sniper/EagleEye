@@ -23,7 +23,9 @@ class DataPipeline:
         self._orders: Optional[pd.DataFrame] = None
         self._order_items: Optional[pd.DataFrame] = None
         self._items: Optional[pd.DataFrame] = None
+
         self._places: Optional[pd.DataFrame] = None
+        self._inventory_snapshot: Optional[pd.DataFrame] = None
     
     def load_all(self) -> Dict[str, pd.DataFrame]:
         """Load all CSV files from data directory."""
@@ -122,48 +124,81 @@ class DataPipeline:
         stats['cv'] = stats['std_daily'] / stats['mean_daily']
         stats['cv'] = stats['cv'].fillna(0)
         
-        # Merge with item details
-        items = self._items[['id', 'title', 'price']].copy()
-        items.columns = ['item_id', 'item_name', 'price']
-        stats = stats.merge(items, on='item_id', how='left')
+        # Merge with item details (Left join to include items with zero sales)
+        items = self._items[['id', 'title', 'price', 'discountable']].copy()
+        items.columns = ['item_id', 'item_name', 'price', 'discountable']
+        stats = items.merge(stats, on='item_id', how='left')
+        
+        # Fill zero sales items
+        stats['mean_daily'] = stats['mean_daily'].fillna(0)
+        stats['std_daily'] = stats['std_daily'].fillna(0)
+        stats['total_qty'] = stats['total_qty'].fillna(0)
+        stats['days_with_sales'] = stats['days_with_sales'].fillna(0)
+        stats['cv'] = stats['cv'].fillna(0)
         
         return stats
 
-    def build_item_place_item_demand_features(
-        self,
-        *,
-        min_date: Optional[str] = None,
-        max_date: Optional[str] = None,
-        place_ids: Optional[list[int]] = None,
-        item_ids: Optional[list[int]] = None,
-        config: Optional["DemandFeatureConfig"] = None,
-    ) -> pd.DataFrame:
-        """Build a supervised learning dataset at (date, place_id, item_id).
-
-        Includes engineered features: price/margin/discount, store traffic,
-        channel mix, calendar/holidays, lag/rolling demand, lifecycle, static
-        item/place metadata, and rank/ABC signals.
+    def get_inventory_snapshot(self) -> pd.DataFrame:
         """
-        if self._orders is None or self._order_items is None or self._items is None or self._places is None:
-            self.load_core_tables()
+        Generate or retrieve a cached snapshot of inventory with simulated stock levels.
+        This ensures consistency across requests and enables fast filtering.
+        """
+        if self._inventory_snapshot is not None:
+            return self._inventory_snapshot
 
-        # Local import to avoid import-path issues when running this file directly.
-        try:
-            from services.demand_feature_builder import DemandFeatureBuilder, DemandFeatureConfig
-        except Exception:
-            from .demand_feature_builder import DemandFeatureBuilder, DemandFeatureConfig
+        # 1. Get base stats
+        stats = self.get_item_stats().copy()
 
-        builder = DemandFeatureBuilder(config or DemandFeatureConfig())
-        return builder.build(
-            self._orders,
-            self._order_items,
-            self._items,
-            self._places,
-            min_date=min_date,
-            max_date=max_date,
-            place_ids=place_ids,
-            item_ids=item_ids,
-        )
+        # 2. Vectorized simulation of stock levels
+        # Lead time = 2 days, Safety Stock = 1.96 * std * sqrt(2)
+        stats['safety_stock'] = 1.96 * stats['std_daily'] * np.sqrt(2)
+        stats['reorder_point'] = (stats['mean_daily'] * 2) + stats['safety_stock']
+        stats['capacity'] = np.ceil(stats['mean_daily'] * 7) + 5
+
+        # Generate current stock (vectorized)
+        # Use a stable random seed based on item_id to ensure reproducibility if re-run
+        # But here we run it once and cache, so simple random is fine. 
+        # However, to be safe against reload, we can seed.
+        np.random.seed(42) 
+        # We need a different random value for each item
+        stats['current_stock'] = np.random.uniform(0.1, 1.0, size=len(stats)) * stats['capacity']
+        
+        # Determine status (vectorized)
+        conditions = [
+            stats['current_stock'] < (stats['reorder_point'] * 0.5),
+            stats['current_stock'] < stats['reorder_point'],
+            stats['current_stock'] > (stats['capacity'] * 0.9)
+        ]
+        choices = ['CRITICAL', 'UNDERSTOCKED', 'OVERSTOCKED']
+        stats['status'] = np.select(conditions, choices, default='HEALTHY')
+
+
+
+        # ABC Classification (Vectorized)
+        # Revenue = Total Qty * Price
+        # Handle missing prices/qty
+        if 'total_qty' in stats.columns and 'price' in stats.columns:
+             stats['revenue'] = stats['total_qty'].fillna(0) * stats['price'].fillna(0)
+             # Sort for cumulative sum
+             stats = stats.sort_values('revenue', ascending=False)
+             stats['cum_revenue'] = stats['revenue'].cumsum()
+             total_rev = stats['revenue'].sum()
+             
+             if total_rev > 0:
+                 stats['cum_perc'] = stats['cum_revenue'] / total_rev
+                 abc_conditions = [
+                     stats['cum_perc'] <= 0.80,
+                     stats['cum_perc'] <= 0.95
+                 ]
+                 stats['abc_class'] = np.select(abc_conditions, ['A', 'B'], default='C')
+             else:
+                 stats['abc_class'] = 'C'
+        else:
+            stats['abc_class'] = 'N/A'
+
+        # Cache the result
+        self._inventory_snapshot = stats
+        return self._inventory_snapshot
     
     @property
     def orders(self) -> pd.DataFrame:
