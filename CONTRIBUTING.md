@@ -57,7 +57,7 @@ cd ../..
 ## 📁 Project Structure
 
 ```
-DIH-X-AUC-Hackathon/
+EagleEye/
 ├── Data/                       # Datasets (via Git LFS)
 │   ├── dim_*.csv               # Dimension tables
 │   └── fct_*.csv               # Fact tables
@@ -89,7 +89,7 @@ The backend serves the REST API for forecasting and inventory management.
 
 ```bash
 # Make sure you're in the project root and venv is activated
-cd DIH-X-AUC-Hackathon
+cd EagleEye
 source venv/bin/activate  # if not already activated
 
 # Start the FastAPI server
