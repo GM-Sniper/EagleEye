@@ -1,0 +1,197 @@
+{
+  "summary": {
+    "total_orders": 399810,
+    "total_revenue": 178090176.50000003,
+    "avg_order_value": 445.43702383632234,
+    "unique_items": 26036,
+    "last_updated": "2026-02-06T12:17:53.247979"
+  },
+  "temporal": {
+    "busiest_day": "Friday",
+    "peak_hour": 16,
+    "weekday_pct": 73.06045371551487
+  },
+  "demand_by_day": [
+    {
+      "day": "Monday",
+      "avg_orders": 44571,
+      "avg_order_value": 119.52689057907608
+    },
+    {
+      "day": "Tuesday",
+      "avg_orders": 50626,
+      "avg_order_value": 1983.1680679887804
+    },
+    {
+      "day": "Wednesday",
+      "avg_orders": 56781,
+      "avg_order_value": 132.79292967718075
+    },
+    {
+      "day": "Thursday",
+      "avg_orders": 60751,
+      "avg_order_value": 593.5651834537704
+    },
+    {
+      "day": "Friday",
+      "avg_orders": 79374,
+      "avg_order_value": 148.9576710257767
+    },
+    {
+      "day": "Saturday",
+      "avg_orders": 65712,
+      "avg_order_value": 161.2089011139518
+    },
+    {
+      "day": "Sunday",
+      "avg_orders": 41995,
+      "avg_order_value": 151.1217421121562
+    }
+  ],
+  "peak_hours": [
+    {
+      "hour": 16,
+      "order_count": 45452,
+      "revenue": 102322271.51
+    },
+    {
+      "hour": 17,
+      "order_count": 44658,
+      "revenue": 8667013.24
+    },
+    {
+      "hour": 11,
+      "order_count": 35015,
+      "revenue": 3927130.79
+    },
+    {
+      "hour": 12,
+      "order_count": 32142,
+      "revenue": 3848407.68
+    },
+    {
+      "hour": 15,
+      "order_count": 32130,
+      "revenue": 32392532.7
+    }
+  ],
+  "forecast": [
+    {
+      "date": "2024-02-17 00:00:00",
+      "predicted_demand": 7935
+    },
+    {
+      "date": "2024-02-18 00:00:00",
+      "predicted_demand": 5299
+    },
+    {
+      "date": "2024-02-19 00:00:00",
+      "predicted_demand": 5541
+    },
+    {
+      "date": "2024-02-20 00:00:00",
+      "predicted_demand": 7012
+    },
+    {
+      "date": "2024-02-21 00:00:00",
+      "predicted_demand": 7212
+    },
+    {
+      "date": "2024-02-22 00:00:00",
+      "predicted_demand": 7216
+    },
+    {
+      "date": "2024-02-23 00:00:00",
+      "predicted_demand": 7753
+    }
+  ],
+  "top_items": [
+    {
+      "item_id": 480007,
+      "item_name": "Alm \u00d8l",
+      "mean_daily": 152.63095238095238,
+      "cv": 0.531429493475452,
+      "total_qty": 25642
+    },
+    {
+      "item_id": 615418,
+      "item_name": "\u00d8l Alm.",
+      "mean_daily": 184.49612403100775,
+      "cv": 0.625270819353184,
+      "total_qty": 23800
+    },
+    {
+      "item_id": 653549,
+      "item_name": "Lille box",
+      "mean_daily": 176.69924812030075,
+      "cv": 0.28090810158521345,
+      "total_qty": 23501
+    },
+    {
+      "item_id": 653567,
+      "item_name": "Mellem box",
+      "mean_daily": 149.6390977443609,
+      "cv": 0.2680029357132102,
+      "total_qty": 19902
+    },
+    {
+      "item_id": 622799,
+      "item_name": "Alm Sandwich",
+      "mean_daily": 132.17171717171718,
+      "cv": 0.3642095564689801,
+      "total_qty": 13085
+    },
+    {
+      "item_id": 751704,
+      "item_name": "\u00d8l Alm",
+      "mean_daily": 102.34126984126983,
+      "cv": 0.596095803171307,
+      "total_qty": 12895
+    },
+    {
+      "item_id": 618681,
+      "item_name": "Unspecified",
+      "mean_daily": 92.36029411764706,
+      "cv": 3.711476870975622,
+      "total_qty": 12561
+    },
+    {
+      "item_id": 622975,
+      "item_name": "Almindelig",
+      "mean_daily": 90.58646616541354,
+      "cv": 0.601464201524735,
+      "total_qty": 12048
+    },
+    {
+      "item_id": 429645,
+      "item_name": "\u00d8l/Vand/Spiritus",
+      "mean_daily": 163.38888888888889,
+      "cv": 0.7594797780485406,
+      "total_qty": 11764
+    },
+    {
+      "item_id": 429643,
+      "item_name": "\u00d8l/Vand/Spiritus",
+      "mean_daily": 155.01388888888889,
+      "cv": 0.31189126890362,
+      "total_qty": 11161
+    }
+  ],
+  "abc_classification": [
+    {
+      "class": "A",
+      "item_count": 3742,
+      "revenue": 106553986.0
+    },
+    {
+      "class": "B",
+      "item_count": 5858,
+      "revenue": 19985485.4
+    },
+    {
+      "class": "C",
+      "item_count": 16436,
+      "revenue": 6661412.99
+    }
+  ]
+}
