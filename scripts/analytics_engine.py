@@ -12,7 +12,7 @@ import json
 import sys
 
 # Add parent directory for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from services.data_pipeline import DataPipeline
 from models.forecaster import DemandForecaster, ItemDemandForecaster

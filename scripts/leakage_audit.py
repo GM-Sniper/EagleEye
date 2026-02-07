@@ -8,6 +8,12 @@ Run from repo root, example:
   python src/leakage_audit.py --val-days 28 --min-date 2023-08-20 --max-date 2024-02-16 --place-ids 94025
 """
 
+import sys
+from pathlib import Path
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+
 from __future__ import annotations
 
 import argparse

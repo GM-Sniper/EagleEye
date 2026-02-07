@@ -4,6 +4,12 @@ EagleEye - Comprehensive Data Analysis Script
 Generates a detailed findings report for the inventory management hackathon.
 """
 
+import sys
+from pathlib import Path
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+
 import pandas as pd
 import numpy as np
 from datetime import datetime

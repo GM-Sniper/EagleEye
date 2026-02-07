@@ -11,6 +11,12 @@ Optional:
   python src/train_final_forecaster_reports.py --val-days 28 --top-places 6 --top-items 12
 """
 
+import sys
+from pathlib import Path
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+
 from __future__ import annotations
 
 import argparse

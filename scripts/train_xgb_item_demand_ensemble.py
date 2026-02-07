@@ -14,6 +14,12 @@ Optional for quicker smoke tests:
   python src/train_xgb_item_demand_ensemble.py --val-days 28 --n-models 3 --sample-frac 0.2
 """
 
+import sys
+from pathlib import Path
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+
 from __future__ import annotations
 
 import argparse

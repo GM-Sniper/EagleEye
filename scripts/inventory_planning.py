@@ -17,6 +17,12 @@ Notes
   null for many ingredient SKUs), it will be skipped in the BOM expansion.
 """
 
+import sys
+from pathlib import Path
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+
 from __future__ import annotations
 
 import argparse
