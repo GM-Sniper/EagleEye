@@ -1,4 +1,7 @@
-# ![EagleEye Logo](src/frontend/src/assets/eagleeye.png) EagleEye
+# EagleEye
+<div align="center">
+  <img src="src/frontend/src/assets/eagleeye.png" alt="EagleEye Logo"/>
+</div>
 
 > **Deloitte x AUC Hackathon 2026** | Fresh Flow Markets Use Case
 
@@ -185,7 +188,7 @@ EagleEye/
 | **Ramy Shehata** | Frontend Developer | 20% | UI/UX design, React components, and dashboard implementation |
 | **Mostafa Gaafer** | Backend Developer | 20% | FastAPI architecture, DuckDB integration, and API endpoints |
 | **Noor Emam** | Integration Engineer | 20% | Connecting frontend to backend, system testing, and deployment |
-```
+
 
 ---
 
