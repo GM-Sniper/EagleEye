@@ -11,7 +11,7 @@ By integrating advanced machine learning forecasting with real-time inventory tr
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Technologies Used](#-technologies-used)
@@ -24,43 +24,43 @@ By integrating advanced machine learning forecasting with real-time inventory tr
 
 ---
 
-## ✨ Features
+## Features
 
 EagleEye provides a holistic suite of tools for inventory optimization:
 
-### 1. 📊 Demand Forecasting
+### 1. Demand Forecasting
 ML-powered predictions for daily, weekly, and monthly demand using advanced models (XGBoost/Prophet).
 > ![Demand Forecasting Dashboard Screenshot](docs/screenshots/demand_forecast.png)
 > *Dashboard showing predicted demand vs actual sales with confidence intervals.*
 
-### 2. 🛡️ Intelligent Inventory Management
+### 2. Intelligent Inventory Management
 Automated reorder point calculations and safety stock recommendations based on variability and lead times.
 > ![Inventory Management Screenshot](docs/screenshots/inventory_list.png)
 > *Real-time inventory tracking with status indicators (Healthy, Critical, Understocked).*
 
-### 3. 📈 Demand Analysis
+### 3. Demand Analysis
 Identify your highest-performing items ("Stars") and underperformers to optimize your catalog.
 > ![Demand Analysis Screenshot](docs/screenshots/demand_analysis.png)
 > *Top performing items analysis ranked by revenue and order volume.*
 
-### 4. � Per-Item Demand Analysis
+### 4. Per-Item Demand Analysis
 Deep-dive into specific items with historical sales data, detailed forecasts, and ingredients breakdown (Bill of Materials).
 > ![Item Details Screenshot](docs/screenshots/item_details.png)
 > *Detailed view of a single item's performance, forecast, and composition.*
 
-### 5. �🚨 Smart Alerts System
+### 5. Smart Alerts System
 Instant notifications for high-priority issues such as stock checkouts, high demand variability, or expiration risks.
 > ![Alerts System Screenshot](docs/screenshots/alerts.png)
 > *Priority alerts for immediate action.*
 
-### 6. 🔍 Insightful Analytics
+### 6. Insightful Analytics
 Comprehensive dashboards tracking revenue, order volume, and model accuracy metrics (MAPE).
 > ![Analytics Dashboard Screenshot](docs/screenshots/dashboard_overview.png)
 > *High-level KPIs and business health metrics.*
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Backend
 *   **Python 3.12+**: Core logic and API handling.
@@ -83,7 +83,7 @@ Comprehensive dashboards tracking revenue, order volume, and model accuracy metr
 
 ---
 
-## 🚀 Installation
+## Installation
 
 Follow these steps to set up the project locally.
 
@@ -129,7 +129,7 @@ Follow these steps to set up the project locally.
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### 1. Start the Backend API
 Run the FastAPI server from the project root:
@@ -148,7 +148,7 @@ Access the application at: [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a modular micro-service style architecture:
 
@@ -179,25 +179,25 @@ EagleEye/
 
 ---
 
-## 👥 Team Members
+## Team Members
 
 | Name | Role | Contribution % | Contributions |
 |------|------|:--------------:|---------------|
 | **Seif Elansary** | Data Analyst | 20% | Exploratory data analysis, data cleaning, and visualization |
 | **Marwan Abudaif** | AI Engineer | 20% | Developing and tuning XGBoost and Prophet models |
 | **Ramy Shehata** | Frontend Developer | 20% | UI/UX design, React components, and dashboard implementation |
-| **Mostafa Gaafer** | Backend Developer | 20% | FastAPI architecture, DuckDB integration, and API endpoints |
+| **Mostafa Gaafer** | Backend Developer | 20% | FastAPI architecture and API endpoints |
 | **Noor Emam** | Integration Engineer | 20% | Connecting frontend to backend, system testing, and deployment |
 
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on our git workflow, code style, and submission process.
 
 ---
 
-## 📄 License
+## License
 
 This project was created for the Deloitte x AUC Hackathon 2026.
