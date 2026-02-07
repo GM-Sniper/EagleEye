@@ -5,7 +5,7 @@ import {
     Settings,
     LayoutDashboard,
     Package,
-    ChefHat,
+    BarChart3,
     Tag,
     TrendingUp
 } from 'lucide-react';
@@ -20,7 +20,7 @@ export const Header = () => {
     const links = [
         { name: 'Dashboard', to: '/', icon: LayoutDashboard },
         { name: 'Inventory', to: '/inventory', icon: Package },
-        { name: 'Menu', to: '/menu', icon: ChefHat },
+        { name: 'Demand', to: '/menu', icon: BarChart3 },
         { name: 'Pricing', to: '/pricing', icon: Tag },
         { name: 'Forecasting', to: '/forecasting', icon: TrendingUp },
     ];

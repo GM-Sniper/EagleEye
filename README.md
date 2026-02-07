@@ -1,235 +1,200 @@
-# 🦅 EagleEye - Intelligent Inventory Management
+# EagleEye
+<div align="center">
+  <img src="src/frontend/src/assets/eagleeye.png" alt="EagleEye Logo"/>
+</div>
 
 > **Deloitte x AUC Hackathon 2026** | Fresh Flow Markets Use Case
 
-An AI-powered inventory management system that transforms reactive stock decisions into proactive demand intelligence—minimizing waste, preventing stockouts, and maximizing profitability.
+**EagleEye** is a comprehensive, AI-powered inventory management system designed for Fresh Flow Markets. It transforms reactive stock keeping into proactive demand intelligence, enabling businesses to minimize waste, prevent expensive stockouts, and maximize profitability through data-driven decisions.
+
+By integrating advanced machine learning forecasting with real-time inventory tracking, EagleEye provides actionable insights that bridge the gap between historical sales data and future demand.
 
 ---
 
 ## 📋 Table of Contents
 
-- [Problem Statement](#-problem-statement)
-- [Our Solution](#-our-solution)
 - [Features](#-features)
 - [Technologies Used](#-technologies-used)
 - [Installation](#-installation)
 - [Usage](#-usage)
 - [Architecture](#-architecture)
-- [Data Description](#-data-description)
-- [Contributing](#-contributing)
 - [Team Members](#-team-members)
-
-> 📖 **New to the project?** See the [Contributing Guide](./CONTRIBUTING.md) for detailed setup instructions, git workflow, and best practices.
-
----
-
-## 🎯 Problem Statement
-
-Restaurant and grocery owners face a relentless balancing act:
-
-| Problem | Impact |
-|---------|--------|
-| **Over-stocking** | Waste, expired inventory, reduced profits |
-| **Under-stocking** | Stockouts, lost revenue, frustrated customers |
-| **Poor demand forecasting** | Reactive decisions based on gut instinct |
-
-**Fresh Flow Markets needs intelligent systems, not gut instinct.**
-
-### Business Questions We Address
-
-1. **Demand Prediction**: How do we accurately predict daily, weekly, and monthly demand?
-2. **Prep Optimization**: What prep quantities should kitchens prepare to minimize waste?
-3. **Expiration Management**: How can we prioritize inventory based on expiration dates?
-4. **Smart Promotions**: What promotions or bundles can move near-expired items profitably?
-5. **External Factors**: How do weather, holidays, and weekends impact sales?
-
----
-
-## 💡 Our Solution
-
-**EagleEye** is a data-driven inventory intelligence platform that:
-
-- 📊 Analyzes historical sales data to forecast demand
-- 🔮 Predicts optimal stock levels using ML models
-- ⚠️ Alerts on expiring inventory with promotion suggestions
-- 📈 Provides actionable dashboards for inventory decisions
-- 🌦️ Incorporates external factors (weather, holidays, events)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
 ## ✨ Features
 
-| Feature | Description |
-|---------|-------------|
-| **Demand Forecasting** | ML-powered predictions for daily/weekly/monthly demand |
-| **Smart Reorder Points** | Automated stock level recommendations |
-| **Expiration Tracker** | Priority alerts for near-expiry items |
-| **Promotion Engine** | Bundle suggestions for expiring inventory |
-| **External Factor Analysis** | Weather and holiday impact on sales |
-| **Interactive Dashboard** | Real-time inventory insights and KPIs |
+EagleEye provides a holistic suite of tools for inventory optimization:
 
-*Screenshots will be added as features are implemented.*
+### 1. 📊 Demand Forecasting
+ML-powered predictions for daily, weekly, and monthly demand using advanced models (XGBoost/Prophet).
+> ![Demand Forecasting Dashboard Screenshot](docs/screenshots/demand_forecast.png)
+> *Dashboard showing predicted demand vs actual sales with confidence intervals.*
+
+### 2. 🛡️ Intelligent Inventory Management
+Automated reorder point calculations and safety stock recommendations based on variability and lead times.
+> ![Inventory Management Screenshot](docs/screenshots/inventory_list.png)
+> *Real-time inventory tracking with status indicators (Healthy, Critical, Understocked).*
+
+### 3. 📈 Demand Analysis
+Identify your highest-performing items ("Stars") and underperformers to optimize your catalog.
+> ![Demand Analysis Screenshot](docs/screenshots/demand_analysis.png)
+> *Top performing items analysis ranked by revenue and order volume.*
+
+### 4. � Per-Item Demand Analysis
+Deep-dive into specific items with historical sales data, detailed forecasts, and ingredients breakdown (Bill of Materials).
+> ![Item Details Screenshot](docs/screenshots/item_details.png)
+> *Detailed view of a single item's performance, forecast, and composition.*
+
+### 5. �🚨 Smart Alerts System
+Instant notifications for high-priority issues such as stock checkouts, high demand variability, or expiration risks.
+> ![Alerts System Screenshot](docs/screenshots/alerts.png)
+> *Priority alerts for immediate action.*
+
+### 6. 🔍 Insightful Analytics
+Comprehensive dashboards tracking revenue, order volume, and model accuracy metrics (MAPE).
+> ![Analytics Dashboard Screenshot](docs/screenshots/dashboard_overview.png)
+> *High-level KPIs and business health metrics.*
 
 ---
 
 ## 🛠️ Technologies Used
 
-### Data & Analytics
-| Technology | Purpose |
-|------------|---------|
-| **Python 3.12+** | Core programming language |
-| **Pandas / Polars** | Data processing and manipulation |
-| **Jupyter Notebooks** | Exploratory data analysis |
-| **scikit-learn** | Machine learning models |
-| **Prophet / XGBoost** | Time-series forecasting |
-
 ### Backend
-| Technology | Purpose |
-|------------|---------|
-| **FastAPI** | High-performance REST API |
-| **DuckDB / SQLite** | Lightweight analytical database |
-| **Pydantic** | Data validation |
+*   **Python 3.12+**: Core logic and API handling.
+*   **FastAPI**: High-performance, modern web framework for building APIs.
+*   **Pandas / Polars**: Efficient data manipulation and analysis.
+*   **XGBoost / Prophet**: State-of-the-art machine learning models for time-series forecasting.
+*   **DuckDB**: In-process SQL OLAP database for analytical queries.
 
 ### Frontend
-| Technology | Purpose |
-|------------|---------|
-| **Next.js 15** | React framework with App Router |
-| **TypeScript** | Type-safe JavaScript |
-| **Tailwind CSS** | Utility-first styling |
-| **Recharts / Plotly** | Data visualization |
+*   **React 19 (via Vite)**: Fast, modern UI library.
+*   **Tailwind CSS**: Utility-first CSS framework for rapid UI development.
+*   **Recharts**: Composable charting library for React.
+*   **Lucide React**: Beautiful, consistent icons.
+*   **Framer Motion**: Production-ready animation library.
 
-### DevOps & Tools
-| Technology | Purpose |
-|------------|---------|
-| **Git LFS** | Large file storage for datasets |
-| **Docker** | Containerization (optional) |
-| **pytest** | Testing framework |
+### Analytics & DevTools
+*   **Jupyter Notebooks**: For exploratory data analysis (EDA).
+*   **Git LFS**: Managing large datasets.
+*   **Pytest**: Robust testing framework.
 
 ---
 
 ## 🚀 Installation
 
+Follow these steps to set up the project locally.
+
 ### Prerequisites
+*   Python 3.12 or higher
+*   Node.js 20 or higher
+*   Git (with LFS support)
 
-- Python 3.12+
-- Node.js 20+
-- Git with LFS support
+### Step-by-Step Guide
 
-### Quick Start
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/GM-Sniper/EagleEye.git
+    cd EagleEye
+    ```
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/ynakhla/DIH-X-AUC-Hackathon.git
-cd DIH-X-AUC-Hackathon
+2.  **Download Data (Git LFS)**
+    ```bash
+    git lfs pull
+    ```
 
-# 2. Pull LFS data
-git lfs pull
+3.  **Backend Setup**
+    ```bash
+    # Create virtual environment
+    python -m venv venv
+    
+    # Activate virtual environment
+    # Windows:
+    venv\Scripts\activate
+    # Mac/Linux:
+    # source venv/bin/activate
 
-# 3. Create Python virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+    # Install Python dependencies
+    pip install -r requirements.txt
+    ```
 
-# 4. Install Python dependencies
-pip install -r requirements.txt
-
-# 5. Install frontend dependencies (if applicable)
-cd src/web
-npm install
-cd ../..
-```
+4.  **Frontend Setup**
+    ```bash
+    cd src/frontend
+    npm install
+    cd ../..
+    ```
 
 ---
 
 ## 📖 Usage
 
-### Running the Analysis
-
+### 1. Start the Backend API
+Run the FastAPI server from the project root:
 ```bash
-# Start Jupyter for data exploration
-jupyter notebook src/analysis.ipynb
+uvicorn src.api:app --reload --port 8000
 ```
+The API documentation will be available at: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-### Running the API
-
+### 2. Start the Frontend Application
+In a new terminal, navigate to the frontend directory and start the dev server:
 ```bash
-# Start FastAPI server
-uvicorn src.api.main:app --reload
-```
-
-### Running the Frontend
-
-```bash
-cd src/web
+cd src/frontend
 npm run dev
 ```
+Access the application at: [http://localhost:5173](http://localhost:5173)
 
 ---
 
 ## 🏗️ Architecture
 
+The project follows a modular micro-service style architecture:
+
 ```
-DIH-X-AUC-Hackathon/
-├── Data/                    # Dataset (via Git LFS)
-│   ├── dim_*.csv            # Dimension tables (items, places, users)
-│   ├── fct_*.csv            # Fact tables (orders, transactions)
-│   └── most_ordered.csv     # Pre-computed analytics
+EagleEye/
+├── Data/                       # Raw and processed datasets (Git LFS)
+│   ├── dim_*.csv               # Dimension tables (items, users, etc.)
+│   └── fct_*.csv               # Fact tables (orders, transactions)
 ├── src/
-│   ├── analysis.ipynb       # Exploratory data analysis
-│   ├── main.py              # Entry point
-│   ├── api/                 # FastAPI endpoints
-│   ├── models/              # ML models and data models
-│   ├── services/            # Business logic
-│   ├── utils/               # Helper functions
-│   └── web/                 # Next.js frontend
-├── tests/                   # Test suite
-├── docs/                    # Documentation
-└── config/                  # Configuration files
+│   ├── api.py                  # Main FastAPI application entry point
+│   ├── models/                 # ML Forecasting models (Prophet, XGBoost, etc.)
+│   │   ├── hybrid_forecaster.py
+│   │   └── production_forecaster.py
+│   ├── services/               # Business logic layer
+│   │   ├── data_pipeline.py    # Data ingestion and processing
+│   │   ├── inventory_service.py # Inventory optimization logic
+│   │   └── menu_analytics_service.py
+│   ├── frontend/               # React Frontend Application
+│   │   ├── src/
+│   │   │   ├── pages/          # Application Routes (Dashboard, Inventory, Demand)
+│   │   │   ├── components/     # Reusable UI Components
+│   │   │   └── services/       # API integration
+│   │   └── package.json
+│   └── analysis.ipynb          # EDA Notebooks
+├── requirements.txt            # Python dependencies
+└── README.md                   # Project documentation
 ```
-
----
-
-## 📊 Data Description
-
-### Dataset Overview (~650 MB)
-
-| Table | Size | Description |
-|-------|------|-------------|
-| `fct_orders.csv` | 62 MB | Order transactions with payments |
-| `fct_order_items.csv` | 211 MB | Line items per order |
-| `fct_cash_balances.csv` | 358 MB | Cash register sessions |
-| `dim_items.csv` | 14 MB | Menu items with prices, VAT |
-| `dim_users.csv` | 11 MB | Customer and staff accounts |
-| `dim_places.csv` | 2 MB | Restaurant/venue locations |
-| `dim_menu_items.csv` | 2 MB | Menu structure |
-| + 12 more tables | | Campaigns, add-ons, inventory |
-
-### Key Data Notes
-
-- All timestamps are **UNIX integers**
-- All monetary values are in **DKK (Danish Krone)**
-- Data spans **2021-2025**
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our **[Contributing Guide](./CONTRIBUTING.md)** for:
-
-- 🚀 **Quick Start** - First-time setup instructions
-- 🏃 **Running the App** - How to start backend and frontend
-- 🌿 **Git Workflow** - Branching strategy and commit conventions
-- ✅ **Best Practices** - Code quality guidelines
-- ❓ **Troubleshooting** - Common issues and solutions
 
 ---
 
 ## 👥 Team Members
 
-| Name | Role | Contributions |
-|------|------|---------------|
-| TBD | TBD | TBD |
-| TBD | TBD | TBD |
-| TBD | TBD | TBD |
+| Name | Role | Contribution % | Contributions |
+|------|------|:--------------:|---------------|
+| **Seif Elansary** | Data Analyst | 20% | Exploratory data analysis, data cleaning, and visualization |
+| **Marwan Abudaif** | AI Engineer | 20% | Developing and tuning XGBoost and Prophet models |
+| **Ramy Shehata** | Frontend Developer | 20% | UI/UX design, React components, and dashboard implementation |
+| **Mostafa Gaafer** | Backend Developer | 20% | FastAPI architecture, DuckDB integration, and API endpoints |
+| **Noor Emam** | Integration Engineer | 20% | Connecting frontend to backend, system testing, and deployment |
+
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on our git workflow, code style, and submission process.
 
 ---
 
