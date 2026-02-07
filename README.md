@@ -16,7 +16,10 @@ An AI-powered inventory management system that transforms reactive stock decisio
 - [Usage](#-usage)
 - [Architecture](#-architecture)
 - [Data Description](#-data-description)
+- [Contributing](#-contributing)
 - [Team Members](#-team-members)
+
+> 📖 **New to the project?** See the [Contributing Guide](./CONTRIBUTING.md) for detailed setup instructions, git workflow, and best practices.
 
 ---
 
@@ -205,6 +208,18 @@ DIH-X-AUC-Hackathon/
 - All timestamps are **UNIX integers**
 - All monetary values are in **DKK (Danish Krone)**
 - Data spans **2021-2025**
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our **[Contributing Guide](./CONTRIBUTING.md)** for:
+
+- 🚀 **Quick Start** - First-time setup instructions
+- 🏃 **Running the App** - How to start backend and frontend
+- 🌿 **Git Workflow** - Branching strategy and commit conventions
+- ✅ **Best Practices** - Code quality guidelines
+- ❓ **Troubleshooting** - Common issues and solutions
 
 ---
 
